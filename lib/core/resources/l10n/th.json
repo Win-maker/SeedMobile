@@ -1,0 +1,10 @@
+{
+  "appTitle": "แอป Todo",
+  "loginTitle": "เข้าสู่ระบบ",
+  "loginButton": "เข้าสู่ระบบ",
+  "companyCodeHint": "รหัสบริษัท",
+  "fullNameHint": "ชื่อเต็ม",
+  "passwordHint": "รหัสผ่าน",
+  "fillAllFieldsError": "กรุณากรอกข้อมูลให้ครบ",
+  "loginLoading": "กำลังเข้าสู่ระบบ..."
+}

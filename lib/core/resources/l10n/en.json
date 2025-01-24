@@ -1,0 +1,10 @@
+{
+  "appTitle": "Todo App",
+  "loginTitle": "Login",
+  "loginButton": "Login",
+  "companyCodeHint": "Company Code",
+  "fullNameHint": "Full Name",
+  "passwordHint": "Password",
+  "fillAllFieldsError": "Please fill in all fields",
+  "loginLoading": "Logging in..."
+}
