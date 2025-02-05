@@ -1,8 +1,12 @@
+import 'dart:ui';
+
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:todo/feature/home/models/home_content.dart'; 
 
 class AudioPlayerView extends StatefulWidget {
-  const AudioPlayerView({super.key});
+  final Contents? songInformation;
+  const AudioPlayerView({super.key, this.songInformation});
 
   @override
   State<AudioPlayerView> createState() => _AudioPlayerViewState();
@@ -10,15 +14,16 @@ class AudioPlayerView extends StatefulWidget {
 
 class _AudioPlayerViewState extends State<AudioPlayerView> {
   AudioPlayer audioPlayer = AudioPlayer();
-  String url = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3";
-  String songTitle = "Super Shy";
+  late String url;
+  late String songTitle;
+  late String imgUrl;
   String artist = "New Jeans";
   PlayerState playerState = PlayerState.paused;
   int timeProgress = 0;
   int audioDuration = 0;
 
   Widget slider() {
-    return Container(
+    return SizedBox(
       width: 350,
       child: Slider.adaptive(
         activeColor: Colors.green,
@@ -34,13 +39,16 @@ class _AudioPlayerViewState extends State<AudioPlayerView> {
   @override
   void initState() {
     super.initState();
+    url = widget.songInformation?.contentFile ?? '';
+    songTitle = widget.songInformation?.wordDescription ?? '';
+    imgUrl = widget.songInformation?.pictureBackground ?? '';
+
     audioPlayer.onPlayerStateChanged.listen((PlayerState s) {
       setState(() {
         playerState = s;
       });
     });
 
-    audioPlayer.setSourceUrl(url);
     audioPlayer.onDurationChanged.listen((Duration d) {
       setState(() {
         audioDuration = d.inMilliseconds;
@@ -75,107 +83,113 @@ class _AudioPlayerViewState extends State<AudioPlayerView> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('lib/core/resources/images/bg.jpg'),
-            fit: BoxFit.cover,
-            colorFilter: ColorFilter.mode(
-              Colors.black.withOpacity(0.4),
-              BlendMode.darken,
-            ),
-          ),
-        ),
         alignment: Alignment.center,
-        child: Column(
+        child: Stack(
           children: [
-             SizedBox(height: 60),
-            Row(
-              children: [
-                Container(
-                  margin: EdgeInsets.only(left: 20),
-                  width: 50,
-                  height: 50,
+            Positioned.fill(
+              child: ImageFiltered(
+                imageFilter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0), 
+                child: Container(
                   decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Color.fromARGB(255, 80, 101, 131),
+                    image: DecorationImage(
+                      image: NetworkImage(imgUrl),
+                      fit: BoxFit.cover,
+                    ),
                   ),
-                  child: Icon(
-                    Icons.arrow_circle_left_outlined,
-                    size: 35,
+                ),
+              ),
+            ),
+            Column(
+              children: [
+                SizedBox(height: 60),
+                Row(
+                  children: [
+                    Container(
+                      margin: EdgeInsets.only(left: 20),
+                      width: 50,
+                      height: 50,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Color.fromARGB(255, 80, 101, 131),
+                      ),
+                      child: Icon(
+                        Icons.arrow_circle_left_outlined,
+                        size: 35,
+                        color: Colors.white,
+                      ),
+                    ),
+                    SizedBox(width: 10),
+                    Text("Sound", style: TextStyle(fontSize: 30, color: Colors.white)),
+                  ],
+                ),
+                SizedBox(height: 30),
+                Text(
+                  songTitle,
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
                     color: Colors.white,
                   ),
                 ),
-                SizedBox(width: 10),
-                Text("Sound",
-                    style: TextStyle(fontSize: 30, color: Colors.white))
-              ],
-            ),
-
-            SizedBox(
-              height: 30
-            ),
-            Text(
-              songTitle,
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
-            SizedBox(height: 70),
-            Container(
-              width: 250,
-              height: 250,
-              decoration: BoxDecoration(
-                  image: DecorationImage(
-                      image:
-                          AssetImage('lib/core/resources/images/newjean.jpg'),
-                      fit: BoxFit.cover)),
-            ),
-      
-            slider(),
-             Container(
-              width: 300,
-               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                 children: [
-                   Text(
-                        getTimeString(timeProgress),
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      Text(
-                    getTimeString(audioDuration),
-                    style: TextStyle(color: Colors.white),
+                SizedBox(height: 70),
+                Container(
+                  width: 250,
+                  height: 250,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: NetworkImage(imgUrl),
+                      fit: BoxFit.cover,
+                    ),
                   ),
-                 ],
-               ),
-             ),
-                 
-            SizedBox(height: 20),
-            // Play/Pause Button
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                  IconButton(onPressed: (){},
-                 icon: Icon(Icons.square, color: Colors.white), iconSize: 30.0,),
-                IconButton(onPressed: (){},
-                 icon: Icon(Icons.skip_previous,color: Colors.white), iconSize: 30.0,),
-                IconButton(
-                  onPressed: () {
-                    playerState == PlayerState.playing ? onPause() : onPlay();
-                  },
-                  icon: Icon(
-                    playerState == PlayerState.playing
-                        ? Icons.pause
-                        : Icons.play_arrow,
-                  ),
-                  iconSize: 50.0,
-                  color: Colors.white,
                 ),
-                             IconButton(onPressed: (){},
-                 icon: Icon(Icons.skip_next, color: Colors.white), iconSize: 30.0,),
-                   IconButton(onPressed: (){},
-                 icon: Icon(Icons.favorite_border_outlined, color: Colors.white), iconSize: 30.0,),
+                slider(),
+                Container(
+                  width: 300,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(getTimeString(timeProgress), style: TextStyle(color: Colors.white)),
+                      Text(getTimeString(audioDuration), style: TextStyle(color: Colors.white)),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 20),
+                // Play/Pause Button
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    IconButton(
+                      onPressed: () {},
+                      icon: Icon(Icons.square, color: Colors.white),
+                      iconSize: 30.0,
+                    ),
+                    IconButton(
+                      onPressed: () {},
+                      icon: Icon(Icons.skip_previous, color: Colors.white),
+                      iconSize: 30.0,
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        playerState == PlayerState.playing ? onPause() : onPlay();
+                      },
+                      icon: Icon(
+                        playerState == PlayerState.playing ? Icons.pause : Icons.play_arrow,
+                      ),
+                      iconSize: 50.0,
+                      color: Colors.white,
+                    ),
+                    IconButton(
+                      onPressed: () {},
+                      icon: Icon(Icons.skip_next, color: Colors.white),
+                      iconSize: 30.0,
+                    ),
+                    IconButton(
+                      onPressed: () {},
+                      icon: Icon(Icons.favorite_border_outlined, color: Colors.white),
+                      iconSize: 30.0,
+                    ),
+                  ],
+                ),
               ],
             ),
           ],
@@ -185,10 +199,8 @@ class _AudioPlayerViewState extends State<AudioPlayerView> {
   }
 
   String getTimeString(int milliSeconds) {
-    String minutes =
-        "${(milliSeconds / 60000).floor() < 10 ? 0 : ''} ${(milliSeconds / 60000).floor()}";
-    String seconds =
-        "${(milliSeconds / 1000).floor() % 60 < 10 ? 0 : ''} ${(milliSeconds / 1000).floor() % 60}";
+    String minutes = "${(milliSeconds / 60000).floor() < 10 ? 0 : ''} ${(milliSeconds / 60000).floor()}";
+    String seconds = "${(milliSeconds / 1000).floor() % 60 < 10 ? 0 : ''} ${(milliSeconds / 1000).floor() % 60}";
 
     return "$minutes:$seconds";
   }

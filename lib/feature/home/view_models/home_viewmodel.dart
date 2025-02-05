@@ -7,6 +7,7 @@ import 'package:todo/feature/home/models/home_content.dart';
 class HomeViewModel extends ChangeNotifier {
   final ApiService _apiService;
 
+
   bool _isLoading = false;
   bool _isAuthenticated = false;
   List<Contents>? _contents;
@@ -58,11 +59,10 @@ class HomeViewModel extends ChangeNotifier {
       notifyListeners();
     });
     try {
-      final getAllBannersPics = await _apiService.authService.getBanner(companyId);
+      final getAllBannersPics =
+          await _apiService.authService.getBanner(companyId);
       _isAuthenticated = true;
       _banners = getAllBannersPics;
-      print("this is from home view model");
-      print(_banners);
       WidgetsBinding.instance.addPostFrameCallback((_) {
         notifyListeners();
       });

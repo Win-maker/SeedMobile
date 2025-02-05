@@ -66,7 +66,7 @@ class ApiManager {
           break;
       }
       if (response.statusCode >= 200 && response.statusCode < 300) {
-        print('This is type checking $response.body.runtimeType');
+        
         return jsonDecode(response.body);
       } else {
         throw Exception('Failed API call: ${response.body}');

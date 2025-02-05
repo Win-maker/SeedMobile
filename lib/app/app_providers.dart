@@ -7,6 +7,7 @@ import 'package:todo/core/utils/shared_preferences.dart';
 import 'package:todo/feature/auth/view_models/auth_viewmodel.dart';
 import 'package:provider/single_child_widget.dart';
 import 'package:todo/feature/home/view_models/home_viewmodel.dart';
+import 'package:todo/feature/profile/view_models/profile_view_model.dart';
 
 // List of providers for the application
 final List<SingleChildWidget> appProviders = [
@@ -21,5 +22,11 @@ final List<SingleChildWidget> appProviders = [
       apiService: ApiService(ApiManager.instance, SharedPreferencesService()),
     ),
   ),
+
+  ChangeNotifierProvider(
+    create: (_) => ProfileViewModel(
+       apiService: ApiService(ApiManager.instance, SharedPreferencesService()),
+    )
+    )
   // Add more providers as needed
 ];

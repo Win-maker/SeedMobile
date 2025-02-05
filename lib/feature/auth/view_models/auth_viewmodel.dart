@@ -77,9 +77,9 @@ class AuthViewModel extends ChangeNotifier {
   Future<void> login(String abbreviation, String fullName, String password,
       BuildContext context) async {
     _isLoading = true;
-    // Notify listeners here to indicate loading is happening
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      notifyListeners(); // This will notify after the current build phase
+      notifyListeners();
     });
 
     try {
@@ -91,9 +91,8 @@ class AuthViewModel extends ChangeNotifier {
       _user = getLoginData;
       notifyListeners();
 
-      GoRouter.of(context).go('/audio');
+      GoRouter.of(context).go('/home');
     } catch (e) {
-      print(e);
       String errorMessage = e is SocketException
           ? "Network error, please check your internet connection."
           : "Invalid credentials, please check and try again.";

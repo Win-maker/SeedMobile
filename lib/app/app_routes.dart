@@ -9,6 +9,7 @@ import 'package:todo/feature/auth/views/login_screen.dart';
 import 'package:todo/feature/home/views/home_view.dart';
 import 'package:todo/feature/error/error_page.dart';
 import 'package:todo/feature/library/view/LibraryView.dart';
+import 'package:todo/feature/profile/view/ProfileView.dart';
 
 class AppRoutes {
   // Route names
@@ -17,6 +18,7 @@ class AppRoutes {
   static const String audio = '/audio';
   static const String error = '/error';
   static const String library = '/library';
+  static const String profile = '/profile';
 
   // Create GoRouter instance
   static GoRouter createRouter(BuildContext context) {
@@ -35,7 +37,7 @@ class AppRoutes {
 
         // Redirect to home if authenticated and trying to access login
         if (isAuthenticated && isLoggingIn) {
-          return audio;
+          return home;
         }
 
         // No redirection needed
@@ -51,11 +53,12 @@ class AppRoutes {
           builder: (context, state) => const HomeView(),
         ),
         GoRoute(
-            path: audio,
-             builder: (context, state) => const AudioPlayerView()),       
+            path: '/audio/:audioPlayerLink',
+            builder: (context, state) => const AudioPlayerView()),
         GoRoute(
-          path: library,
-           builder: (context, state) => const LibraryView()),
+            path: library, builder: (context, state) => const LibraryView()),
+        GoRoute(
+            path: profile, builder: (context, state) => const Profileview()),
         GoRoute(
           path: error,
           builder: (context, state) => const ErrorPage(),
